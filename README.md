@@ -5,6 +5,8 @@ Everyone must have the mod in order for it to work!<br/>
 > [!WARNING]
 > This mod requires [Lethal Bots](https://thunderstore.io/c/lethal-company/p/TRizzle/LethalBots/) to be installed.
 
+You can download the mod here: https://thunderstore.io/c/lethal-company/p/TRizzle/LethalBotsNavMeshProject/
+
 I also have a discord server as well for any questions or support: https://discord.gg/TVqJst8yHf
 
 ## Installation
