@@ -6,12 +6,12 @@ repository = "https://thunderstore.io"
 
 [package]
 description = "[V81] An addon for Lethal Bots to add custom NavMesh links for moons."
-websiteUrl = "https://github.com/T-Rizzle12/"
+websiteUrl = "https://github.com/T-Rizzle12/LethalBots-NavMesh-Project"
 containsNsfwContent = false
 [package.dependencies]
 BepInEx-BepInExPack = "5.4.2305"
 Sigurd-CSync = "5.0.1"
-TRizzle-LethalBots = "8.0.0"
+TRizzle-LethalBots = "9.0.1"
 
 [build]
 icon = "./icon.png"

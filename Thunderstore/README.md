@@ -1,6 +1,8 @@
 # LethalBots NavMesh Project
 A Lethal Company Mod made for Lethal Bots to add custom NavMesh links for moons.</br>
 
+I also have a discord server as well for any questions or support: https://discord.gg/TVqJst8yHf
+
 ## Installation
 1. Download the latest release from Thunderstore.io using your favorite mod manager (e.g., Thunderstore Mod Manager, R2ModMan, Gale, etc.).
 2. Make sure to have Lethal Bots installed as this mod does nothing without it.
