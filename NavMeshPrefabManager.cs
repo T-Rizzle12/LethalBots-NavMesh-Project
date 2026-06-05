@@ -1,0 +1,74 @@
+﻿using LethalBotsNavMeshProject.MoonNavMeshes;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace LethalBotsNavMeshProject
+{
+    public static class NavMeshPrefabManager
+    {
+        private const string EXPERIMENTATION_MOON_SCENE_NAME = "41 Experimentation.Level1Experimentation";
+        private const string ASSURANCE_MOON_SCENE_NAME = "220 Assurance.Level2Assurance";
+        private const string VOW_MOON_SCENE_NAME = "56 Vow.Level3Vow";
+        private const string OFFENSE_MOON_SCENE_NAME = "21 Offense.Level7Offense";
+        private const string ADAMANCE_MOON_SCENE_NAME = "20 Adamance.Level10Adamance";
+        private const string EMBRION_MOON_SCENE_NAME = "5 Embrion.Level11Embrion";
+        public static readonly Dictionary<string, MoonNavMesh> NavMeshPrefabs = new Dictionary<string, MoonNavMesh>();
+
+        private static GameObject ExperimentationNavPrefab = null!;
+        private static GameObject AssuranceNavPrefab = null!;
+        private static GameObject VowNavPrefab = null!;
+        private static GameObject OffenseNavPrefab = null!;
+        private static GameObject AdamanceNavPrefab = null!;
+        private static GameObject EmbrionNavPrefab = null!;
+
+        internal static void LoadPrefabs()
+        {
+            // Load the nav mesh prefabs from the asset bundle
+            if (!ArePrefabsLoaded())
+            {
+                ExperimentationNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("ExperimentationNavMesh");
+                AssuranceNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("AssuranceNavMesh");
+                VowNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("VowNavMesh");
+                OffenseNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("OffenseNavMesh");
+                AdamanceNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("AdamanceNavMesh");
+                EmbrionNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("EmbrionNavMesh");
+            }
+
+            // Clear all entries from the dictionary before adding new ones
+            NavMeshPrefabs.Clear();
+
+            // Create MoonNavMesh instances and add them to the dictionary
+            NavMeshPrefabs.TryAdd(EXPERIMENTATION_MOON_SCENE_NAME, new ExperimentationNavMesh(ExperimentationNavPrefab));
+            NavMeshPrefabs.TryAdd(ASSURANCE_MOON_SCENE_NAME, new AssuranceNavMesh(AssuranceNavPrefab));
+            NavMeshPrefabs.TryAdd(VOW_MOON_SCENE_NAME, new VowNavMesh(VowNavPrefab));
+            NavMeshPrefabs.TryAdd(OFFENSE_MOON_SCENE_NAME, new OffenceNavMesh(OffenseNavPrefab));
+            NavMeshPrefabs.TryAdd(ADAMANCE_MOON_SCENE_NAME, new AdamanceNavMesh(AdamanceNavPrefab));
+            NavMeshPrefabs.TryAdd(EMBRION_MOON_SCENE_NAME, new EmbrionNavMesh(EmbrionNavPrefab));
+        }
+
+        public static GameObject? GetPrefabForLevel(string levelName)
+        {
+            if (!NavMeshPrefabs.TryGetValue(levelName, out MoonNavMesh? moonNavMesh))
+            {
+                Plugin.LogError($"No navmesh prefab found for level with scene name: {levelName}");
+                return null;
+            }
+            return moonNavMesh.GetNavPrefab();
+        }
+
+        public static bool IsValidLevel(string levelName)
+        {
+            return NavMeshPrefabs.TryGetValue(levelName, out MoonNavMesh moonNavMesh) && moonNavMesh.IsPrefabEnabled();
+        }
+
+        public static bool ArePrefabsLoaded()
+        {
+            return ExperimentationNavPrefab != null &&
+                   AssuranceNavPrefab != null &&
+                   VowNavPrefab != null &&
+                   OffenseNavPrefab != null &&
+                   AdamanceNavPrefab != null &&
+                   EmbrionNavPrefab != null;
+        }
+    }
+}
