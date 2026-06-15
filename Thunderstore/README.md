@@ -32,3 +32,10 @@ I also have a discord server as well for any questions or support: https://disco
 
 ### Embrion
 - Bots can now path to and from the Main Entrance.
+
+### Artifice
+- Bots can now properly use the second ladder on the ship.
+- Bots have more dropdown options on some catwalks.
+- Bots have more dropdown options at the main entrance
+- Bots can now dropdown from the stairwell near the main entrance.
+- If a bot somehow gets ontop of the side shack, they can now get down from it.
