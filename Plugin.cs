@@ -52,6 +52,9 @@ namespace LethalBotsNavMeshProject
                 Plugin.LogWarning("Some levels may not have custom nav meshes.");
             }
 
+            // Log the prefab status
+            NavMeshPrefabManager.LogPrefabStatus();
+
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             Plugin.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
@@ -100,6 +103,7 @@ namespace LethalBotsNavMeshProject
                     // NOTE: This is mostly because while NavMeshColliders has no local offset,
                     // this could change in the future and cause issues with the prefab!
                     Plugin.LogWarning("Failed to find NavMeshColliders! Fallback to parenting to the Environment object.");
+                    Plugin.LogError("This may cause the NavFixes to fail to work. Report this to the mod devs!");
                     parentTransform = environment.transform;
                 }
                 else

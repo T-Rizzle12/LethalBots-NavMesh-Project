@@ -25,6 +25,7 @@ namespace LethalBotsNavMeshProject
         [SyncedEntryField] public SyncedEntry<bool> EnableOffenceNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableAdamanceNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableEmbrionNav;
+        [SyncedEntryField] public SyncedEntry<bool> EnableArtificeNav;
         public ConfigEntry<bool> EnableDebugLog;
 
         public Config(ConfigFile cfg) : base(MyPluginInfo.PLUGIN_GUID)
@@ -60,6 +61,11 @@ namespace LethalBotsNavMeshProject
                                                     "Enable Embrion Nav Improvements",
                                                     defaultVal: true,
                                                     "If you are using a modified version of Embrion, you may want to disable these improvements!");
+
+            EnableArtificeNav = cfg.BindSyncedEntry(ConfigSection,
+                                                    "Enable Artifice Nav Improvements",
+                                                    defaultVal: true,
+                                                    "If you are using a modified version of Artifice, you may want to disable these improvements!");
 
             EnableDebugLog = cfg.Bind(ConfigDebug,
                                       "EnableDebugLog  (Client only)",

@@ -12,6 +12,7 @@ namespace LethalBotsNavMeshProject
         private const string OFFENSE_MOON_SCENE_NAME = "21 Offense.Level7Offense";
         private const string ADAMANCE_MOON_SCENE_NAME = "20 Adamance.Level10Adamance";
         private const string EMBRION_MOON_SCENE_NAME = "5 Embrion.Level11Embrion";
+        private const string ARTIFICE_MOON_SCENE_NAME = "68 Artifice.Level9Artifice";
         public static readonly Dictionary<string, MoonNavMesh> NavMeshPrefabs = new Dictionary<string, MoonNavMesh>();
 
         private static GameObject ExperimentationNavPrefab = null!;
@@ -20,6 +21,7 @@ namespace LethalBotsNavMeshProject
         private static GameObject OffenseNavPrefab = null!;
         private static GameObject AdamanceNavPrefab = null!;
         private static GameObject EmbrionNavPrefab = null!;
+        private static GameObject ArtificeNavPrefab = null!;
 
         internal static void LoadPrefabs()
         {
@@ -32,6 +34,7 @@ namespace LethalBotsNavMeshProject
                 OffenseNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("OffenseNavMesh");
                 AdamanceNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("AdamanceNavMesh");
                 EmbrionNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("EmbrionNavMesh");
+                ArtificeNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("ArtificeNavMesh");
             }
 
             // Clear all entries from the dictionary before adding new ones
@@ -44,8 +47,14 @@ namespace LethalBotsNavMeshProject
             NavMeshPrefabs.TryAdd(OFFENSE_MOON_SCENE_NAME, new OffenceNavMesh(OffenseNavPrefab));
             NavMeshPrefabs.TryAdd(ADAMANCE_MOON_SCENE_NAME, new AdamanceNavMesh(AdamanceNavPrefab));
             NavMeshPrefabs.TryAdd(EMBRION_MOON_SCENE_NAME, new EmbrionNavMesh(EmbrionNavPrefab));
+            NavMeshPrefabs.TryAdd(ARTIFICE_MOON_SCENE_NAME, new ArtificeNavMesh(ArtificeNavPrefab));
         }
 
+        /// <summary>
+        /// Gets the NavPrefab for the given <paramref name="levelName"/>
+        /// </summary>
+        /// <param name="levelName">This should be <see cref="SelectableLevel.PlanetName"/>.<see cref="SelectableLevel.sceneName"/>.<br/> For example: 41 Experimentation.Level1Experimentation</param>
+        /// <returns></returns>
         public static GameObject? GetPrefabForLevel(string levelName)
         {
             if (!NavMeshPrefabs.TryGetValue(levelName, out MoonNavMesh? moonNavMesh))
@@ -56,11 +65,20 @@ namespace LethalBotsNavMeshProject
             return moonNavMesh.GetNavPrefab();
         }
 
+        /// <summary>
+        /// Checks if a NavPrefab exists for the given <paramref name="levelName"/>
+        /// </summary>
+        /// <param name="levelName">This should be <see cref="SelectableLevel.PlanetName"/>.<see cref="SelectableLevel.sceneName"/>.<br/> For example: 41 Experimentation.Level1Experimentation</param>
+        /// <returns></returns>
         public static bool IsValidLevel(string levelName)
         {
             return NavMeshPrefabs.TryGetValue(levelName, out MoonNavMesh moonNavMesh) && moonNavMesh.IsPrefabEnabled();
         }
 
+        /// <summary>
+        /// Checks if every prefab was successfully loaded
+        /// </summary>
+        /// <returns></returns>
         public static bool ArePrefabsLoaded()
         {
             return ExperimentationNavPrefab != null &&
@@ -68,7 +86,30 @@ namespace LethalBotsNavMeshProject
                    VowNavPrefab != null &&
                    OffenseNavPrefab != null &&
                    AdamanceNavPrefab != null &&
-                   EmbrionNavPrefab != null;
+                   EmbrionNavPrefab != null &&
+                   ArtificeNavPrefab != null;
+        }
+
+        /// <summary>
+        /// Lists every Nav Prefab in <see cref="NavMeshPrefabs"/>
+        /// </summary>
+        public static void LogPrefabStatus()
+        {
+            foreach (var moonNavData in NavMeshPrefabs)
+            {
+                MoonNavMesh moonNavMesh = moonNavData.Value;
+                if (moonNavMesh != null)
+                {
+                    GameObject? navPrefab = moonNavMesh.GetNavPrefab();
+                    if (navPrefab != null)
+                    {
+                        Plugin.LogInfo($"Navmesh prefab found for level with scene name: {moonNavData.Key}. \n Is Prefab Enabled: {moonNavMesh.IsPrefabEnabled()}");
+                        continue;
+                    }
+                }
+
+                Plugin.LogWarning($"No navmesh prefab found for level with scene name: {moonNavData.Key}");
+            }
         }
     }
 }
