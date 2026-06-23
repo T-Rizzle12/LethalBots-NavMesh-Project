@@ -115,6 +115,24 @@ namespace LethalBotsNavMeshProject
                 // Instantiate the navmesh prefab and parent it to the NavMeshColliders object (or Environment if we failed to find it).
                 GameObject? newNavMesh = GameObject.Instantiate(navMeshPrefab, parentTransform);
 
+                // Build custom NavMeshSurfaces.
+                NavMeshSurface[] navMeshSurfaces = newNavMesh.GetComponentsInChildren<NavMeshSurface>(includeInactive: true);
+                foreach (NavMeshSurface navMeshSurface in navMeshSurfaces)
+                {
+                    // Make this is enabled!
+                    bool wasEnabled = navMeshSurface.enabled;
+                    navMeshSurface.enabled = true;
+
+                    // Set the area to Lethal Bots only
+                    navMeshSurface.defaultArea = LethalBots.Constants.Const.LETHAL_BOT_ONLY_NAVAREA;
+
+                    // Actually build the mesh
+                    navMeshSurface.BuildNavMesh();
+
+                    // Set enabled status back to how it was before
+                    navMeshSurface.enabled = wasEnabled;
+                }
+
                 // Now, we need to update the area mask of the NavMeshLink and OffMeshLink components to be bot only.
                 NavMeshLink[] navMeshLinks = newNavMesh.GetComponentsInChildren<NavMeshLink>(includeInactive: true);
                 foreach (NavMeshLink navMeshLink in navMeshLinks)
