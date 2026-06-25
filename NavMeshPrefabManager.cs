@@ -13,6 +13,7 @@ namespace LethalBotsNavMeshProject
         private const string ADAMANCE_MOON_SCENE_NAME = "20 Adamance.Level10Adamance";
         private const string EMBRION_MOON_SCENE_NAME = "5 Embrion.Level11Embrion";
         private const string ARTIFICE_MOON_SCENE_NAME = "68 Artifice.Level9Artifice";
+        private const string TITAN_MOON_SCENE_NAME = "8 Titan.Level8Titan";
         public static readonly Dictionary<string, MoonNavMesh> NavMeshPrefabs = new Dictionary<string, MoonNavMesh>();
 
         private static GameObject ExperimentationNavPrefab = null!;
@@ -22,6 +23,7 @@ namespace LethalBotsNavMeshProject
         private static GameObject AdamanceNavPrefab = null!;
         private static GameObject EmbrionNavPrefab = null!;
         private static GameObject ArtificeNavPrefab = null!;
+        private static GameObject TitanNavPrefab = null!;
 
         internal static void LoadPrefabs()
         {
@@ -35,6 +37,7 @@ namespace LethalBotsNavMeshProject
                 AdamanceNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("AdamanceNavMesh");
                 EmbrionNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("EmbrionNavMesh");
                 ArtificeNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("ArtificeNavMesh");
+                TitanNavPrefab = Plugin.ModAssets.LoadAsset<GameObject>("TitanNavMesh");
             }
 
             // Clear all entries from the dictionary before adding new ones
@@ -48,6 +51,7 @@ namespace LethalBotsNavMeshProject
             NavMeshPrefabs.TryAdd(ADAMANCE_MOON_SCENE_NAME, new AdamanceNavMesh(AdamanceNavPrefab));
             NavMeshPrefabs.TryAdd(EMBRION_MOON_SCENE_NAME, new EmbrionNavMesh(EmbrionNavPrefab));
             NavMeshPrefabs.TryAdd(ARTIFICE_MOON_SCENE_NAME, new ArtificeNavMesh(ArtificeNavPrefab));
+            NavMeshPrefabs.TryAdd(TITAN_MOON_SCENE_NAME, new TitanNavMesh(TitanNavPrefab));
         }
 
         /// <summary>
@@ -87,7 +91,8 @@ namespace LethalBotsNavMeshProject
                    OffenseNavPrefab != null &&
                    AdamanceNavPrefab != null &&
                    EmbrionNavPrefab != null &&
-                   ArtificeNavPrefab != null;
+                   ArtificeNavPrefab != null &&
+                   TitanNavPrefab != null;
         }
 
         /// <summary>
