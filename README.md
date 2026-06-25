@@ -44,3 +44,8 @@ I also have a discord server as well for any questions or support: https://disco
 - Bots have more dropdown options at the main entrance
 - Bots can now dropdown from the stairwell near the main entrance.
 - If a bot somehow gets ontop of the side shack, they can now get down from it.
+
+### Titan
+- Bots have more dropdown options at the Main Entrance stairwell.
+- Bots have more dropdown options on the Fire Exit stairwell
+- Opened even more dropdown routes to help the bots with their return trip.
