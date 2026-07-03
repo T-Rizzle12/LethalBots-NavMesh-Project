@@ -127,7 +127,14 @@ namespace LethalBotsNavMeshProject
                     navMeshSurface.defaultArea = LethalBots.Constants.Const.LETHAL_BOT_ONLY_NAVAREA;
 
                     // Actually build the mesh
-                    navMeshSurface.BuildNavMesh();
+                    if (navMeshSurface.navMeshData != null)
+                    {
+                        navMeshSurface.UpdateNavMesh(navMeshSurface.navMeshData);
+                    }
+                    else
+                    {
+                        navMeshSurface.BuildNavMesh();
+                    }
 
                     // Set enabled status back to how it was before
                     navMeshSurface.enabled = wasEnabled;
