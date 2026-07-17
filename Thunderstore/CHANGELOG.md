@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.2 - 2026-07-17
+Fixed debug logs not respecting the value of EnableDebugLog
+
 ## 1.2.1 - 2026-07-3
 - Made a minor optimization when rebaking NavMeshSurfaces to use async rebaking when possible
 

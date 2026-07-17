@@ -15,7 +15,7 @@ namespace LethalBotsNavMeshProject
     {
         public const string PLUGIN_GUID = "T-Rizzle.LethalBotsNavMeshProject";
         public const string PLUGIN_NAME = "LethalBotsNavMeshProject";
-        public const string PLUGIN_VERSION = "1.0.0";
+        public const string PLUGIN_VERSION = "1.2.2";
     }
 
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
@@ -167,7 +167,10 @@ namespace LethalBotsNavMeshProject
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void LogDebug(string debugLog)
         {
-            Logger.LogDebug(debugLog);
+            if (Plugin.Config.EnableDebugLog.Value)
+            {
+                Logger.LogDebug(debugLog);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
