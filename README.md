@@ -13,6 +13,12 @@ I also have a discord server as well for any questions or support: https://disco
 1. Download the latest release from Thunderstore.io using your favorite mod manager (e.g., Thunderstore Mod Manager, R2ModMan, Gale, etc.).
 2. Make sure to have Lethal Bots installed as this mod does nothing without it.
 
+## Auto Ladder Link Generation
+The Lethal Bots NavMesh Project can now automatically generate NavMeshLinks on ladders found in the level and in modded interiors.<br/>
+This can be disabled, but will allow more custom moons and interiors to have better support for bots.<br>
+> [!NOTE]
+> Auto-generated links and can only be used by the bots. So, it shouldn't affect base game and modded enemies at all.
+
 ## Current Updated Moons
 ### Experimentation
 - Bots can now properly use the second ladder on the ship.

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
@@ -56,6 +57,15 @@ namespace LethalBotsNavMeshProject
             NavMeshPrefabManager.LogPrefabStatus();
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            try
+            {
+                _harmony.PatchAll(typeof(RoundManagerPatch));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to patch with error {ex}");
+            }
 
             Plugin.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
         }

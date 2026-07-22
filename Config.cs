@@ -19,6 +19,7 @@ namespace LethalBotsNavMeshProject
         private const string ConfigSection = "Lethal Bots NavMesh Project";
         private const string ConfigDebug = "Debug";
 
+        [SyncedEntryField] public SyncedEntry<bool> AutoGenerateLadderLinks;
         [SyncedEntryField] public SyncedEntry<bool> EnableExperimentationNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableAssuranceNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableVowNav;
@@ -32,6 +33,11 @@ namespace LethalBotsNavMeshProject
         public Config(ConfigFile cfg) : base(MyPluginInfo.PLUGIN_GUID)
         {
             cfg.SaveOnConfigSet = false;
+
+            AutoGenerateLadderLinks = cfg.BindSyncedEntry(ConfigSection,
+                                            "Auto Generate Ladder Links",
+                                            defaultVal: true,
+                                            "Should we automatically generate NavMeshLinks for the bots on ladders found in the level. This includes ladders in interiors. \n Only bots will be able to use the newly generated links!");
 
             EnableExperimentationNav = cfg.BindSyncedEntry(ConfigSection,
                                             "Enable Experimentation Nav Improvements",
