@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 - 2026-07-22
+NavMeshLinks will now automatically be generated for all ladders on a level.<br/>
+This works for all custom moon and custom interiors.<br/>
+ONLY BOTS CAN USE THE AUTO GENERATED LINKS.<br/>
+This can be disabled as desired.
+
 ## 1.2.2 - 2026-07-17
 Fixed debug logs not respecting the value of EnableDebugLog
 
