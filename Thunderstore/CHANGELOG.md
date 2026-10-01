@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0 - 2026-10-01
+This update includes some changes to the backend of the mod to use NavMeshLib.<br/>
+
+- Added support to allow custom NavMesh objects that only affect the bot when it's driving a cruiser
+- Added NavMesh improvements for Dine and Rend
+- Updated the PrefabManager to allow moon makers to add their own custom NavMesh changes for the bots. <br/> 
+We check for an assetbundle with the extension .lethalbotsnavmesh and find any GameObject with the component CustomBotNavMeshInfo. <br/>
+The Lethal Bots NavMesh project will automatically load and unload these bundles at runtime. <br/>
+- Fixed some edge cases with OffMeshLinks and auto ladder generation that could cause it to fail.
+
 ## 1.3.0 - 2026-07-22
 NavMeshLinks will now automatically be generated for all ladders on a level.<br/>
 This works for all custom moon and custom interiors.<br/>
