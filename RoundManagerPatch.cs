@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using LethalBots.Constants;
 using LethalBotsNavMeshProject.Helpers;
+using NavMeshLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace LethalBotsNavMeshProject
@@ -76,6 +78,7 @@ namespace LethalBotsNavMeshProject
                     linkObj.transform.rotation = Quaternion.identity;
                     linkObj.transform.localScale = Vector3.one; //ladder.transform.localScale;
                     linkObj.layer = LayerMask.NameToLayer("NavigationSurface");
+                    SceneManager.MoveGameObjectToScene(linkObj, ladder.gameObject.scene);
 
                     Vector3 ladderTopPos = __instance.GetNavMeshPosition(ladder.topOfLadderPosition.position, __instance.navHit, Const.DISTANCE_NPCBODY_FROM_LADDER);
                     Vector3 ladderBottomPos = __instance.GetNavMeshPosition(ladder.bottomOfLadderPosition.position, __instance.navHit, Const.DISTANCE_NPCBODY_FROM_LADDER);
@@ -119,9 +122,10 @@ namespace LethalBotsNavMeshProject
                 // Make sure the link is valid and only the default agent type
                 NavMeshLink navMeshLink = navMeshLinks[i];
                 if (navMeshLink != null 
-                    && navMeshLink.agentTypeID == 0)
+                    && navMeshLink.agentTypeID == CustomAgentManager.DEFAULT_AGENT_ID
+                    && navMeshLink.bidirectional)
                 {
-                    // Check if the link connects the stand and end point of the ladder
+                    // Check if the link connects the start and end point of the ladder
                     Vector3 startPoint = navMeshLink.transform.TransformPoint(navMeshLink.startPoint);
                     Vector3 endPoint = navMeshLink.transform.TransformPoint(navMeshLink.endPoint);
                     if ((ladderTopPos - startPoint).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER
@@ -142,11 +146,22 @@ namespace LethalBotsNavMeshProject
             {
                 // Make sure the link is valid
                 OffMeshLink offMeshLink = offMeshLinks[i];
-                if (offMeshLink != null)
+                if (offMeshLink != null 
+                    && offMeshLink.biDirectional)
                 {
-                    // Check if the link connects the stand and end point of the ladder
-                    Vector3 startPosition = offMeshLink.startTransform.position;
-                    Vector3 endPosition = offMeshLink.endTransform.position;
+                    // Check if the link connects the start and end point of the ladder
+                    Transform startTransform = offMeshLink.startTransform;
+                    Transform endTransform = offMeshLink.endTransform;
+                    Vector3 startPosition = startTransform.position;
+                    Vector3 endPosition = endTransform.position;
+                    if (startTransform == endTransform || startPosition == endPosition)
+                    {
+                        // Some links are not correctly setup, so we skip them.
+                        // A good example of this is Experimentation's Ship Ladder.
+                        continue;
+                    }
+
+                    // Check if the link connects the start and end point of the ladder
                     if ((ladderTopPos - startPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER
                         && (ladderBottomPos - endPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER)
                     {

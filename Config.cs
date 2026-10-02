@@ -28,6 +28,8 @@ namespace LethalBotsNavMeshProject
         [SyncedEntryField] public SyncedEntry<bool> EnableEmbrionNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableArtificeNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableTitanNav;
+        [SyncedEntryField] public SyncedEntry<bool> EnableRendNav;
+        [SyncedEntryField] public SyncedEntry<bool> EnableDineNav;
         public ConfigEntry<bool> EnableDebugLog;
 
         public Config(ConfigFile cfg) : base(MyPluginInfo.PLUGIN_GUID)
@@ -78,6 +80,16 @@ namespace LethalBotsNavMeshProject
                                                     "Enable Titan Nav Improvements",
                                                     defaultVal: true,
                                                     "If you are using a modified version of Titan, you may want to disable these improvements!");
+
+            EnableRendNav = cfg.BindSyncedEntry(ConfigSection,
+                                                    "Enable Rend Nav Improvements",
+                                                    defaultVal: true,
+                                                    "If you are using a modified version of Rend, you may want to disable these improvements!");
+
+            EnableDineNav = cfg.BindSyncedEntry(ConfigSection,
+                                                    "Enable Dine Nav Improvements",
+                                                    defaultVal: true,
+                                                    "If you are using a modified version of Dine, you may want to disable these improvements!");
 
             EnableDebugLog = cfg.Bind(ConfigDebug,
                                       "EnableDebugLog  (Client only)",

@@ -50,3 +50,6 @@ This can be disabled, but will allow more custom moons and interiors to have bet
 - Bots have more dropdown options at the Main Entrance stairwell.
 - Bots have more dropdown options on the Fire Exit stairwell
 - Opened even more dropdown routes to help the bots with their return trip.
+
+### Dine & Rend
+- Added custom NavMeshVolumes to help bots drive better on the moon
