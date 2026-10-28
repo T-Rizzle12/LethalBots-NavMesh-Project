@@ -20,7 +20,6 @@ namespace LethalBotsNavMeshProject.Helpers
         public Transform? bottomTransform = null!;
         public float UpdateInterval = 0.5f; // How often to check
         public int AgentIndex = CustomAgentManager.DEFAULT_AGENT_ID;
-        public int AreaMask = NavMesh.AllAreas;
 
         // Private
         private float updateTimer = 0f;
@@ -61,7 +60,7 @@ namespace LethalBotsNavMeshProject.Helpers
                     bottomTransform = ladder.bottomOfLadderPosition;
                 }
 
-                NavMeshQueryFilter queryFilter = new NavMeshQueryFilter { agentTypeID = AgentIndex, areaMask = AreaMask };
+                NavMeshQueryFilter queryFilter = new NavMeshQueryFilter { agentTypeID = AgentIndex, areaMask = NavMesh.AllAreas };
                 RoundManager instanceRM = RoundManager.Instance;
                 Vector3 ladderTopPos = instanceRM.GetNavMeshPosition(topTransform.position, queryFilter, instanceRM.navHit, Const.DISTANCE_NPCBODY_FROM_LADDER);
                 Vector3 ladderBottomPos = instanceRM.GetNavMeshPosition(bottomTransform.position, queryFilter, instanceRM.navHit, Const.DISTANCE_NPCBODY_FROM_LADDER);

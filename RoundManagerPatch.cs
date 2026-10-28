@@ -26,21 +26,6 @@ namespace LethalBotsNavMeshProject
         [HarmonyPostfix]
         public static void BakeDunGenNavMesh_Postfix(RoundManager __instance)
         {
-            #if DEBUG
-            // Debug materials
-            if (blueMat == null)
-            {
-                blueMat = new Material(Shader.Find("HDRP/Lit"));
-                blueMat.SetColor("_BaseColor", Color.blue);
-
-                redMat = new Material(Shader.Find("HDRP/Lit"));
-                redMat.SetColor("_BaseColor", Color.red);
-
-                orangeMat = new Material(Shader.Find("HDRP/Lit"));
-                orangeMat.SetColor("_BaseColor", new Color(1f, 0.5f, 0f));
-            }
-            #endif
-
             // Clear old NavMeshLinks
             ClearExistingAutoLinks();
 
@@ -55,7 +40,6 @@ namespace LethalBotsNavMeshProject
             #pragma warning disable CS0618 // Type or member is obsolete
             NavMeshLink[] navMeshLinks = Object.FindObjectsByType<NavMeshLink>(FindObjectsSortMode.None);
             InteractTrigger[] interactsTrigger = Object.FindObjectsByType<InteractTrigger>(FindObjectsSortMode.None);
-            OffMeshLink[] offMeshLinks = Object.FindObjectsByType<OffMeshLink>(FindObjectsSortMode.None);
             ExtensionLadderItem[] extensionLadders = Object.FindObjectsByType<ExtensionLadderItem>(FindObjectsSortMode.None);
             for (int i = 0; i < interactsTrigger.Length; i++)
             {
@@ -70,7 +54,7 @@ namespace LethalBotsNavMeshProject
                 if (ladder.isLadder 
                     && ladder.ladderHorizontalPosition != null
                     && !extensionLadders.Any(x => x.ladderScript == ladder)
-                    && !OffMeshLinkExists(__instance, ladder, navMeshLinks, offMeshLinks))
+                    && !NavMeshLinkExists(__instance, ladder, navMeshLinks))
                 {
                     Plugin.LogDebug($"Creating NavMeshLink for ladder {ladder} with name {ladder.name}");
                     GameObject linkObj = new GameObject("LadderNavMeshLink");
@@ -85,8 +69,8 @@ namespace LethalBotsNavMeshProject
                     Plugin.LogDebug($"Nav Position Top: {ladderTopPos} and Bottom: {ladderBottomPos}");
 
                     NavMeshLink newLink = linkObj.AddComponent<NavMeshLink>();
-                    newLink.agentTypeID = 0;
-                    newLink.area = Const.LETHAL_BOT_ONLY_NAVAREA;
+                    newLink.agentTypeID = Const.LETHAL_BOT_NAV_SETTINGS_ID;
+                    newLink.area = NavMesh.GetAreaFromName("Climb");
                     newLink.startPoint = ladderTopPos;
                     newLink.endPoint = ladderBottomPos;
                     newLink.bidirectional = true;
@@ -95,6 +79,7 @@ namespace LethalBotsNavMeshProject
                     newLink.UpdateLink();
 
                     NavMeshLinkHelper linkHelper = ladder.gameObject.AddComponent<NavMeshLinkHelper>();
+                    linkHelper.AgentIndex = Const.LETHAL_BOT_NAV_SETTINGS_ID;
                     linkHelper.link = newLink;
                     linkHelper.ladder = ladder;
                     linkHelper.topTransform = ladder.topOfLadderPosition;
@@ -108,11 +93,11 @@ namespace LethalBotsNavMeshProject
         /// <summary>
         /// Helper function that checks if the given <paramref name="ladder"/> already has a OffMeshLink
         /// </summary>
+        /// <param name="instanceRM"></param>
         /// <param name="ladder"></param>
         /// <param name="navMeshLinks"></param>
-        /// <param name="offMeshLinks"></param>
         /// <returns></returns>
-        private static bool OffMeshLinkExists(RoundManager instanceRM, InteractTrigger ladder, NavMeshLink[] navMeshLinks, OffMeshLink[] offMeshLinks)
+        private static bool NavMeshLinkExists(RoundManager instanceRM, InteractTrigger ladder, NavMeshLink[] navMeshLinks)
         {
             // Cache the top and bottom of the ladder
             Vector3 ladderTopPos = instanceRM.GetNavMeshPosition(ladder.topOfLadderPosition.position, instanceRM.navHit, Const.DISTANCE_NPCBODY_FROM_LADDER);
@@ -122,7 +107,7 @@ namespace LethalBotsNavMeshProject
                 // Make sure the link is valid and only the default agent type
                 NavMeshLink navMeshLink = navMeshLinks[i];
                 if (navMeshLink != null 
-                    && navMeshLink.agentTypeID == CustomAgentManager.DEFAULT_AGENT_ID
+                    && navMeshLink.agentTypeID == Const.LETHAL_BOT_NAV_SETTINGS_ID
                     && navMeshLink.bidirectional)
                 {
                     // Check if the link connects the start and end point of the ladder
@@ -135,40 +120,6 @@ namespace LethalBotsNavMeshProject
                     }
                     else if ((ladderTopPos - endPoint).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER
                         && (ladderBottomPos - startPoint).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // Now check OffMeshLinks
-            for (int i = 0; i < offMeshLinks.Length; i++)
-            {
-                // Make sure the link is valid
-                OffMeshLink offMeshLink = offMeshLinks[i];
-                if (offMeshLink != null 
-                    && offMeshLink.biDirectional)
-                {
-                    // Check if the link connects the start and end point of the ladder
-                    Transform startTransform = offMeshLink.startTransform;
-                    Transform endTransform = offMeshLink.endTransform;
-                    Vector3 startPosition = startTransform.position;
-                    Vector3 endPosition = endTransform.position;
-                    if (startTransform == endTransform || startPosition == endPosition)
-                    {
-                        // Some links are not correctly setup, so we skip them.
-                        // A good example of this is Experimentation's Ship Ladder.
-                        continue;
-                    }
-
-                    // Check if the link connects the start and end point of the ladder
-                    if ((ladderTopPos - startPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER
-                        && (ladderBottomPos - endPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER)
-                    {
-                        return true;
-                    }
-                    else if ((ladderTopPos - endPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER
-                        && (ladderBottomPos - startPosition).sqrMagnitude < Const.DISTANCE_NPCBODY_FROM_LADDER * Const.DISTANCE_NPCBODY_FROM_LADDER)
                     {
                         return true;
                     }
@@ -201,6 +152,7 @@ namespace LethalBotsNavMeshProject
         }
 
         #if DEBUG
+
         private static readonly List<GameObject> debugVisuals = new List<GameObject>();
         private static Material blueMat;
         private static Material redMat;
@@ -219,6 +171,19 @@ namespace LethalBotsNavMeshProject
         public static IEnumerator VisualizeAllNavMeshLinks()
         {
             ClearDebugVisuals();
+
+            // Debug materials
+            if (blueMat == null)
+            {
+                blueMat = new Material(Shader.Find("HDRP/Lit"));
+                blueMat.SetColor("_BaseColor", Color.blue);
+
+                redMat = new Material(Shader.Find("HDRP/Lit"));
+                redMat.SetColor("_BaseColor", Color.red);
+
+                orangeMat = new Material(Shader.Find("HDRP/Lit"));
+                orangeMat.SetColor("_BaseColor", new Color(1f, 0.5f, 0f));
+            }
 
             NavMeshLink[] links = Object.FindObjectsOfType<NavMeshLink>();
 
@@ -289,6 +254,7 @@ namespace LethalBotsNavMeshProject
         {
             RoundManager.Instance.StartCoroutine(VisualizeAllNavMeshLinks());
         }
+
         #endif
     }
 }

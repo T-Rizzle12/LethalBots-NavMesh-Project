@@ -20,7 +20,7 @@ namespace LethalBotsNavMeshProject
     {
         public const string PLUGIN_GUID = "T-Rizzle.LethalBotsNavMeshProject";
         public const string PLUGIN_NAME = "LethalBotsNavMeshProject";
-        public const string PLUGIN_VERSION = "2.0.0";
+        public const string PLUGIN_VERSION = "2.1.0";
     }
 
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
@@ -178,32 +178,51 @@ namespace LethalBotsNavMeshProject
                     // Log what we are doing
                     Plugin.LogInfo("Loading Bot Specific NavMesh!");
 
+                    // Update NavMeshModifier Volumes
+                    NavMeshModifierVolume[] navMeshModifierVolumes = botNavMeshRoot.GetComponentsInChildren<NavMeshModifierVolume>(includeInactive: true);
+                    foreach (NavMeshModifierVolume navMeshModifier in navMeshModifierVolumes)
+                    {
+                        // Make sure only the bot agent is affected by this
+                        navMeshModifier.m_AffectedAgents = new List<int>(new int[1] { Const.LETHAL_BOT_NAV_SETTINGS_ID }); // This is how Unity does it.........
+                    }
+
                     // Build custom NavMeshSurfaces.
                     NavMeshSurface[] navMeshSurfaces = botNavMeshRoot.GetComponentsInChildren<NavMeshSurface>(includeInactive: true);
                     foreach (NavMeshSurface navMeshSurface in navMeshSurfaces)
                     {
-                        // Set the area to Lethal Bots only
-                        navMeshSurface.defaultArea = Const.LETHAL_BOT_ONLY_NAVAREA;
+                        // Set the surface agent ID to the bot's
+                        navMeshSurface.agentTypeID = Const.LETHAL_BOT_NAV_SETTINGS_ID;
 
                         // Actually build the mesh
-                        navMeshSurface.BuildNavMeshAsync();
+                        if (navMeshSurface.isActiveAndEnabled)
+                        {
+                            navMeshSurface.BuildNavMeshAsync();
+                        }
+                        else
+                        {
+                            navMeshSurface.BuildNavMesh();
+                        }
                     }
 
                     // Now, we need to update the area mask of the NavMeshLink and OffMeshLink components to be bot only.
                     NavMeshLink[] navMeshLinks = botNavMeshRoot.GetComponentsInChildren<NavMeshLink>(includeInactive: true);
                     foreach (NavMeshLink navMeshLink in navMeshLinks)
                     {
-                        navMeshLink.area = Const.LETHAL_BOT_ONLY_NAVAREA;
+                        navMeshLink.agentTypeID = Const.LETHAL_BOT_NAV_SETTINGS_ID;
                         navMeshLink.UpdateLink();
                     }
 
                     // Until Zeekerss stops using the obsolete OffMeshLink component, we need to disable the warning for it.
                     #pragma warning disable CS0618 // Type or member is obsolete
                     OffMeshLink[] offMeshLinks = botNavMeshRoot.GetComponentsInChildren<OffMeshLink>(includeInactive: true);
-                    foreach (OffMeshLink offMeshLink in offMeshLinks)
+                    if (offMeshLinks.Length > 0)
                     {
-                        offMeshLink.area = Const.LETHAL_BOT_ONLY_NAVAREA;
-                        offMeshLink.UpdatePositions();
+                        Plugin.LogWarning($"OffMeshLinks were detected on prefab {navMeshPrefab}. This is obsolete! You should use NavMeshLinks instead.");
+                        foreach (OffMeshLink offMeshLink in offMeshLinks)
+                        {
+                            // HACKHACK: Since OffMeshLink only works for the default agent ID, we have to replace them at runtime.
+                            NavMeshUtil.CopyOffMeshLink(offMeshLink, Const.LETHAL_BOT_NAV_SETTINGS_ID, destroyOldOffMeshLink: true);
+                        }
                     }
                     #pragma warning restore CS0618 // Type or member is obsolete
                 }
@@ -216,7 +235,7 @@ namespace LethalBotsNavMeshProject
                     Plugin.LogInfo("Loading Bot Cruiser Specific NavMesh!");
 
                     // Update NavMeshModifier Volumes
-                    NavMeshModifierVolume[] navMeshModifierVolumes = cruiserRoot.GetComponentsInChildren<NavMeshModifierVolume>();
+                    NavMeshModifierVolume[] navMeshModifierVolumes = cruiserRoot.GetComponentsInChildren<NavMeshModifierVolume>(includeInactive: true);
                     foreach (NavMeshModifierVolume navMeshModifier in navMeshModifierVolumes)
                     {
                         // Make sure only the Cruiser is affected by this
@@ -231,7 +250,14 @@ namespace LethalBotsNavMeshProject
                         navMeshSurface.agentTypeID = Const.LETHAL_BOT_CRUISER_NAV_SETTINGS_ID;
 
                         // Actually build the mesh
-                        navMeshSurface.BuildNavMeshAsync();
+                        if (navMeshSurface.isActiveAndEnabled)
+                        {
+                            navMeshSurface.BuildNavMeshAsync();
+                        }
+                        else
+                        {
+                            navMeshSurface.BuildNavMesh();
+                        }
                     }
 
                     // Now, we need to update the area mask of the NavMeshLink and OffMeshLink components to be bot only.
@@ -249,32 +275,51 @@ namespace LethalBotsNavMeshProject
                     // Log about old prefab
                     Plugin.LogWarning($"Old NavMesh prefab is used for {levelName}. \n Ask the mod author to update as the old versions will be removed in a later update.");
 
+                    // Update NavMeshModifier Volumes
+                    NavMeshModifierVolume[] navMeshModifierVolumes = newNavMesh.GetComponentsInChildren<NavMeshModifierVolume>(includeInactive: true);
+                    foreach (NavMeshModifierVolume navMeshModifier in navMeshModifierVolumes)
+                    {
+                        // Make sure only the bot agent is affected by this
+                        navMeshModifier.m_AffectedAgents = new List<int>(new int[1] { Const.LETHAL_BOT_NAV_SETTINGS_ID }); // This is how Unity does it.........
+                    }
+
                     // Build custom NavMeshSurfaces.
                     NavMeshSurface[] navMeshSurfaces = newNavMesh.GetComponentsInChildren<NavMeshSurface>(includeInactive: true);
                     foreach (NavMeshSurface navMeshSurface in navMeshSurfaces)
                     {
                         // Set the area to Lethal Bots only
-                        navMeshSurface.defaultArea = Const.LETHAL_BOT_ONLY_NAVAREA;
+                        navMeshSurface.agentTypeID = Const.LETHAL_BOT_NAV_SETTINGS_ID;
 
                         // Actually build the mesh
-                        navMeshSurface.BuildNavMeshAsync();
+                        if (navMeshSurface.isActiveAndEnabled)
+                        {
+                            navMeshSurface.BuildNavMeshAsync();
+                        }
+                        else
+                        {
+                            navMeshSurface.BuildNavMesh();
+                        }
                     }
 
                     // Now, we need to update the area mask of the NavMeshLink and OffMeshLink components to be bot only.
                     NavMeshLink[] navMeshLinks = newNavMesh.GetComponentsInChildren<NavMeshLink>(includeInactive: true);
                     foreach (NavMeshLink navMeshLink in navMeshLinks)
                     {
-                        navMeshLink.area = Const.LETHAL_BOT_ONLY_NAVAREA;
+                        navMeshLink.agentTypeID = Const.LETHAL_BOT_NAV_SETTINGS_ID;
                         navMeshLink.UpdateLink();
                     }
 
                     // Until Zeekerss stops using the obsolete OffMeshLink component, we need to disable the warning for it.
                     #pragma warning disable CS0618 // Type or member is obsolete
                     OffMeshLink[] offMeshLinks = newNavMesh.GetComponentsInChildren<OffMeshLink>(includeInactive: true);
-                    foreach (OffMeshLink offMeshLink in offMeshLinks)
+                    if (offMeshLinks.Length > 0)
                     {
-                        offMeshLink.area = Const.LETHAL_BOT_ONLY_NAVAREA;
-                        offMeshLink.UpdatePositions();
+                        Plugin.LogWarning($"OffMeshLinks were detected on prefab {navMeshPrefab}. This is obsolete! You should use NavMeshLinks instead.");
+                        foreach (OffMeshLink offMeshLink in offMeshLinks)
+                        {
+                            // HACKHACK: Since OffMeshLink accepts all agent IDs, we have to replace them at runtime.
+                            NavMeshUtil.CopyOffMeshLink(offMeshLink, Const.LETHAL_BOT_NAV_SETTINGS_ID, destroyOldOffMeshLink: true);
+                        }
                     }
                     #pragma warning restore CS0618 // Type or member is obsolete
                 }
