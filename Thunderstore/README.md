@@ -12,7 +12,7 @@ I also have a discord server as well for any questions or support: https://disco
 The Lethal Bots NavMesh Project can now automatically generate NavMeshLinks on ladders found in the level and in modded interiors.<br/>
 This can be disabled, but will allow more custom moons and interiors to have better support for bots.<br>
 > [!NOTE]
-> Auto-generated links and can only be used by the bots. So, it shouldn't affect base game and modded enemies at all.
+> Auto-generated links can only be used by the bots. So, it shouldn't affect base game and modded enemies at all.
 
 ## Current Updated Moons
 ### Experimentation
@@ -53,3 +53,7 @@ This can be disabled, but will allow more custom moons and interiors to have bet
 
 ### Dine & Rend
 - Added custom NavMeshVolumes to help bots drive better on the moon
+
+## March
+- Bots can now jump from the broken bridge
+- Hopefully fixed bots not using the fire exit under the waterfall
