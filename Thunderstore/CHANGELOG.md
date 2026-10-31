@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.0 - 2026-10-29
+## 2.1.0 - 2026-10-30
 - Added support for Lethal Bot's Custom Agent ID
 - Updated Titan NavMesh with some drop down links
 - Updated Rend to have some jump and drop links at the main entrance
