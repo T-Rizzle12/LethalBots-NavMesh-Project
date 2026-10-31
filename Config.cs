@@ -30,6 +30,7 @@ namespace LethalBotsNavMeshProject
         [SyncedEntryField] public SyncedEntry<bool> EnableTitanNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableRendNav;
         [SyncedEntryField] public SyncedEntry<bool> EnableDineNav;
+        [SyncedEntryField] public SyncedEntry<bool> EnableMarchNav;
         public ConfigEntry<bool> EnableDebugLog;
 
         public Config(ConfigFile cfg) : base(MyPluginInfo.PLUGIN_GUID)
@@ -90,6 +91,11 @@ namespace LethalBotsNavMeshProject
                                                     "Enable Dine Nav Improvements",
                                                     defaultVal: true,
                                                     "If you are using a modified version of Dine, you may want to disable these improvements!");
+
+            EnableMarchNav = cfg.BindSyncedEntry(ConfigSection,
+                                                    "Enable March Nav Improvements",
+                                                    defaultVal: true,
+                                                    "If you are using a modified version of March, you may want to disable these improvements!");
 
             EnableDebugLog = cfg.Bind(ConfigDebug,
                                       "EnableDebugLog  (Client only)",

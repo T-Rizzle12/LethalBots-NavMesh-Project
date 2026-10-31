@@ -25,6 +25,7 @@ namespace LethalBotsNavMeshProject
         private const string TITAN_MOON_SCENE_NAME = "8 Titan.Level8Titan";
         private const string REND_MOON_SCENE_NAME = "85 Rend.Level5Rend";
         private const string DINE_MOON_SCENE_NAME = "7 Dine.Level6Dine";
+        private const string MARCH_MOON_SCENE_NAME = "61 March.Level4March";
 
         #region Dictionarys
 
@@ -49,6 +50,7 @@ namespace LethalBotsNavMeshProject
         private static GameObject TitanNavPrefab = null!;
         private static GameObject RendNavPrefab = null!;
         private static GameObject DineNavPrefab = null!;
+        private static GameObject MarchNavPrefab = null!;
 
         internal static void LoadPrefabs()
         {
@@ -73,6 +75,7 @@ namespace LethalBotsNavMeshProject
                 TitanNavPrefab = modAssets.LoadAsset<GameObject>("TitanNavMesh");
                 RendNavPrefab = modAssets.LoadAsset<GameObject>("RendNavMesh");
                 DineNavPrefab = modAssets.LoadAsset<GameObject>("DineNavMesh");
+                MarchNavPrefab = modAssets.LoadAsset<GameObject>("MarchNavMesh");
                 modAssets.Unload(false);
             }
 
@@ -93,6 +96,7 @@ namespace LethalBotsNavMeshProject
             NavMeshPrefabs.TryAdd(TITAN_MOON_SCENE_NAME, new TitanNavMesh(TitanNavPrefab));
             NavMeshPrefabs.TryAdd(REND_MOON_SCENE_NAME, new RendNavMesh(RendNavPrefab));
             NavMeshPrefabs.TryAdd(DINE_MOON_SCENE_NAME, new DineNavMesh(DineNavPrefab));
+            NavMeshPrefabs.TryAdd(MARCH_MOON_SCENE_NAME, new MarchNavMesh(MarchNavPrefab));
 
             // Load mod added instances
             LoadCustomNavMeshPrefabs();
